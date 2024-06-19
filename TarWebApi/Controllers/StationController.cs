@@ -53,5 +53,12 @@ public class StationController : ControllerBase
         var response = await _stationService.DeleteStationAsync(request);
         return Ok(response);
     }
+
+    [HttpPost]
+    [Route("Test")]
+    public ActionResult<string> Test()
+    {
+        return Ok("Ok from Test");
+    }
 }
 
