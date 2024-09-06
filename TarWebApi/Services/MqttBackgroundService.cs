@@ -56,13 +56,20 @@ public class MqttBackgroundService : BackgroundService
 
     private async Task SaveMessageToDatabase(string topic, string message)
     {
-        var request = new CreateMeasurementRequest()
+        try
         {
-            Measurement = new Measurement()
+            var request = new CreateMeasurementRequest()
             {
-                StationId = message
-            }
-        };
-        await _measurementsCollection.InsertOneAsync(request.Measurement);
+                Measurement = new Measurement()
+                {
+                    StationId = message
+                }
+            };
+            await _measurementsCollection.InsertOneAsync(request.Measurement);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }
