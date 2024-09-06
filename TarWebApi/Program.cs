@@ -8,34 +8,39 @@ using TarWebApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.Configure<StationStoreDatabaseSettings>(builder.Configuration.GetSection(nameof(StationStoreDatabaseSettings)));
 builder.Services.AddSingleton<IStationStoreDatabaseSettings>(sp => sp.GetRequiredService<IOptions<StationStoreDatabaseSettings>>().Value);
 builder.Services.AddSingleton<IMongoClient>(s => new MongoClient(builder.Configuration.GetValue<string>("StationStoreDatabaseSettings:ConnectionString")));
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 
-// Configure MQTT client as a singleton
-builder.Services.AddSingleton<IMqttClient>(sp =>
-{
-    var factory = new MqttFactory();
-    return factory.CreateMqttClient();
-});
-
-// Add MqttService as a singleton and ensure it connects at startup
-builder.Services.AddSingleton<IMqttService, MqttService>(sp =>
-{
-    var mqttClient = sp.GetRequiredService<IMqttClient>();
-    var mqttService = new MqttService(mqttClient);
-    mqttService.ConnectAsync().Wait(); // Connect to MQTT broker during startup
-    return mqttService;
-});
-
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Bind MqttSettings from appsettings.json
+builder.Services.Configure<MqttSettings>(builder.Configuration.GetSection("MqttSettings"));
+
+// Register MQTT Client as a singleton
+builder.Services.AddSingleton<IMqttClient>(sp =>
+{
+    var mqttFactory = new MqttFactory();
+    return mqttFactory.CreateMqttClient();
+});
+
+// Use MqttSettings to configure MqttClientOptions
+builder.Services.AddSingleton<MqttClientOptions>(sp =>
+{
+    var mqttSettings = sp.GetRequiredService<IOptions<MqttSettings>>().Value;
+    return new MqttClientOptionsBuilder()
+        .WithClientId(mqttSettings.ClientId)
+        .WithTcpServer(mqttSettings.BrokerAddress, mqttSettings.BrokerPort)
+        .WithCredentials(mqttSettings.Username, mqttSettings.Password)
+        .WithCleanSession(mqttSettings.CleanSession)
+        .Build();
+});
+
+builder.Services.AddHostedService<MqttBackgroundService>();
 
 var app = builder.Build();
 
@@ -48,14 +53,13 @@ var app = builder.Build();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                       Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
 });
 
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
 
