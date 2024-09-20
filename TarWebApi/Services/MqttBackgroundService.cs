@@ -54,7 +54,7 @@ public class MqttBackgroundService : BackgroundService
         // Subscribe to the specified topic
         await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
             .WithTopic("demokritos/weather/#").Build(), stoppingToken);
-        Console.WriteLine("Subscribed to topic: demokritos/weather/#")
+        Console.WriteLine("Subscribed to topic: demokritos/weather/#");
         _logger.LogInformation("Subscribed to topic: demokritos/weather/#");
 
 
