@@ -41,7 +41,7 @@ public class MqttBackgroundService : BackgroundService
         Console.WriteLine("Connected to MQTT broker.");
 
         // Subscribe to the specified topic
-        await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("demokritos/weather").Build(), stoppingToken);
+        await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("demokritos/weather=sw-demokritos-1").Build(), stoppingToken);
         Console.WriteLine("Subscribed to topic: demokritos/weather");
 
         // Keep the application running to listen for messages

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TarWebApi", "TarWebApi.csproj", "{A63D9E73-0A01-4297-81BC-0CAAD8DF4AAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A63D9E73-0A01-4297-81BC-0CAAD8DF4AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63D9E73-0A01-4297-81BC-0CAAD8DF4AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63D9E73-0A01-4297-81BC-0CAAD8DF4AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63D9E73-0A01-4297-81BC-0CAAD8DF4AAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {502E2083-773B-4150-9959-ED3428B6072E}
+	EndGlobalSection
+EndGlobal
