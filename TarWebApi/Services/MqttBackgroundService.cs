@@ -32,16 +32,18 @@ public class MqttBackgroundService : BackgroundService
         // Set up the message handling logic
         _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
+            Console.WriteLine("Test");
             var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
             Console.WriteLine($"Received message: {message} on topic: {e.ApplicationMessage.Topic}");
 
             // Log the received message
             _logger.LogInformation($"Received message: {message} on topic: {e.ApplicationMessage.Topic}");
 
-
             // Extract the weather station name from the topic
             var stationName = ExtractStationNameFromTopic(e.ApplicationMessage.Topic);
 
+            _logger.LogInformation($"Topic: {stationName}");
+            
             // Save the message and station name to the database
             await SaveMessageToDatabase(stationName, message);
         };
