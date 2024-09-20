@@ -11,14 +11,17 @@ public class MqttBackgroundService : BackgroundService
     private readonly IMqttClient _mqttClient;
     private readonly MqttClientOptions _mqttOptions;
     private readonly IMongoCollection<Measurement> _measurementsCollection;
+    private readonly ILogger<MqttBackgroundService> _logger;
 
     public MqttBackgroundService(IMqttClient mqttClient, 
         MqttClientOptions mqttOptions,
         IStationStoreDatabaseSettings settings, 
-        IMongoClient mongoClient)
+        IMongoClient mongoClient,
+        ILogger<MqttBackgroundService> logger)
     {
         _mqttClient = mqttClient;
         _mqttOptions = mqttOptions;
+        _logger = logger;
         var db = mongoClient.GetDatabase(settings.DatabaseName);
         _measurementsCollection = db.GetCollection<Measurement>(settings.MeasurementsCollectionName);
 
@@ -31,6 +34,10 @@ public class MqttBackgroundService : BackgroundService
         {
             var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
             Console.WriteLine($"Received message: {message} on topic: {e.ApplicationMessage.Topic}");
+
+            // Log the received message
+            _logger.LogInformation($"Received message: {message} on topic: {e.ApplicationMessage.Topic}");
+
 
             // Extract the weather station name from the topic
             var stationName = ExtractStationNameFromTopic(e.ApplicationMessage.Topic);
@@ -47,7 +54,9 @@ public class MqttBackgroundService : BackgroundService
         // Subscribe to the specified topic
         await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
             .WithTopic("demokritos/weather/#").Build(), stoppingToken);
-        Console.WriteLine("Subscribed to topic: demokritos/weather/#");
+        Console.WriteLine("Subscribed to topic: demokritos/weather/#")
+        _logger.LogInformation("Subscribed to topic: demokritos/weather/#");
+
 
 
         // Keep the application running to listen for messages
