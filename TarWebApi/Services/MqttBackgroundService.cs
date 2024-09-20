@@ -32,9 +32,13 @@ public class MqttBackgroundService : BackgroundService
             var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
             Console.WriteLine($"Received message: {message} on topic: {e.ApplicationMessage.Topic}");
 
-            // Save the message to the database
-            await SaveMessageToDatabase(e.ApplicationMessage.Topic, message);
+            // Extract the weather station name from the topic
+            var stationName = ExtractStationNameFromTopic(e.ApplicationMessage.Topic);
+
+            // Save the message and station name to the database
+            await SaveMessageToDatabase(stationName, message);
         };
+
 
         // Connect to the MQTT broker
         await _mqttClient.ConnectAsync(_mqttOptions, stoppingToken);
@@ -56,6 +60,18 @@ public class MqttBackgroundService : BackgroundService
         await _mqttClient.DisconnectAsync();
     }
 
+    private string ExtractStationNameFromTopic(string topic)
+    {
+        // Assuming the topic is in the format demokritos/weather/{station-name}
+        var topicParts = topic.Split('/');
+        if (topicParts.Length > 2)
+        {
+            return topicParts.Last(); // This will return the station name like ws-demokritos-2
+        }
+        return string.Empty; // Fallback in case the topic format is unexpected
+    }
+
+
     private async Task SaveMessageToDatabase(string topic, string message)
     {
         try
@@ -64,7 +80,9 @@ public class MqttBackgroundService : BackgroundService
             {
                 Measurement = new Measurement()
                 {
-                    StationId = message
+                    StationId = topic,
+                    Temperature = 1,
+                    Timestamp = DateTime.Now.Ticks
                 }
             };
             await _measurementsCollection.InsertOneAsync(request.Measurement);
