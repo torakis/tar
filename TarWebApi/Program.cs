@@ -2,10 +2,29 @@
 using MongoDB.Driver;
 using MQTTnet;
 using MQTTnet.Client;
+using Serilog;
 using TarWebApi.Models;
 using TarWebApi.Services;
+using System.IO; // For working with directories
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Create logs directory if it doesn't exist
+string logDirectory = Path.Combine(Directory.GetCurrentDirectory(), "logs");
+if (!Directory.Exists(logDirectory))
+{
+    Directory.CreateDirectory(logDirectory);  // Create the logs directory
+}
+
+// Configure Serilog for logging
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()  // Set the minimum log level
+    .WriteTo.Console()  // Log to console
+    .WriteTo.File(Path.Combine(logDirectory, "tar.log"), rollingInterval: RollingInterval.Day)  // Log to a file with daily rolling
+    .CreateLogger();
+
+// Replace default logger with Serilog
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.Configure<StationStoreDatabaseSettings>(builder.Configuration.GetSection(nameof(StationStoreDatabaseSettings)));
@@ -45,15 +64,12 @@ builder.Services.AddHostedService<MqttBackgroundService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
                        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
 });
 
@@ -63,3 +79,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
+// Ensure to flush the Serilog logs on shutdown
+Log.CloseAndFlush();
