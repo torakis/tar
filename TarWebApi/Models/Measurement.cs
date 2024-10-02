@@ -19,49 +19,27 @@ public class Measurement
     public DateTime? Date { get; set; }
 
     [BsonElement("timestamp")]
-    [JsonPropertyName("timestamp")]
+    [JsonPropertyName("t")]
     public long? Timestamp { get; set; }
 
-    [BsonElement("latitude")]
-    [JsonPropertyName("latitude")]
-    public decimal? Latitude { get; set; }
-
-    [BsonElement("longitude")]
-    [JsonPropertyName("longitude")]
-    public decimal? Longitude { get; set; }
-
     [BsonElement("temperature")]
-    [JsonPropertyName("temperature")]
     public decimal? Temperature { get; set; }
 
     [BsonElement("humidity")]
-    [JsonPropertyName("humidity")]
     public decimal? Humidity { get; set; }
-
-    [BsonElement("co2")]
-    [JsonPropertyName("co2")]
-    public int? Co2 { get; set; }
-
-    [BsonElement("pm25")]
-    [JsonPropertyName("pm25")]
-    public decimal? Pm25 { get; set; }
 
     [BsonElement("pressure")]
     public decimal? Pressure { get; set; }
-
-    [BsonElement("precipitation")]
-    [JsonPropertyName("precipitation")]
-    public int? Precipitation { get; set; }
 
     [BsonElement("windSpeed")]
     [JsonPropertyName("Wind_speed")]
     public decimal? WindSpeed { get; set; }
 
     [BsonElement("windDirection")]
-    [JsonPropertyName("windDirection")]
+    [JsonPropertyName("Wind_direction")]
     public int? WindDirection { get; set; }
 
-    [BsonElement("Gust")]
+    [BsonElement("gust")]
     public decimal? Gust { get; set; }
 
     [BsonElement("precipitation")]
