@@ -153,6 +153,18 @@ public class MeasurementService : IMeasurementService
                 Max = measurements.Max(m => m.Humidity),
                 Avg = measurements.Average(m => m.Humidity)
             },
+            Co2 = new StatisticsDetails()
+            {
+                Min = measurements.Min(m => m.CO2),
+                Max = measurements.Max(m => m.CO2),
+                Avg = (decimal?)measurements.Average(m => m.CO2)
+            },
+            Pm25 = new StatisticsDetails()
+            {
+                Min = measurements.Min(m => m.PM25),
+                Max = measurements.Max(m => m.PM25),
+                Avg = measurements.Average(m => m.PM25)
+            },
             Pressure = new StatisticsDetails()
             {
                 Min = measurements.Min(m => m.Pressure),

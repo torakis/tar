@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 namespace TarWebApi.Models;
@@ -37,7 +37,7 @@ public class Measurement
     [JsonPropertyName("Wind_direction")]
     public int? WindDirection { get; set; }
 
-    [BsonElement("Gust")]
+    [BsonElement("gust")]
     public decimal? Gust { get; set; }
 
     [BsonElement("precipitation")]
