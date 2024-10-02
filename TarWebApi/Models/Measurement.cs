@@ -47,19 +47,69 @@ public class Measurement
     public decimal? Pm25 { get; set; }
 
     [BsonElement("pressure")]
-    [JsonPropertyName("pressure")]
-    public int? Pressure { get; set; }
+    public decimal? Pressure { get; set; }
 
     [BsonElement("precipitation")]
     [JsonPropertyName("precipitation")]
     public int? Precipitation { get; set; }
 
     [BsonElement("windSpeed")]
-    [JsonPropertyName("windSpeed")]
-    public int? WindSpeed { get; set; }
+    [JsonPropertyName("Wind_speed")]
+    public decimal? WindSpeed { get; set; }
 
     [BsonElement("windDirection")]
     [JsonPropertyName("windDirection")]
     public int? WindDirection { get; set; }
+
+    [BsonElement("Gust")]
+    public decimal? Gust { get; set; }
+
+    [BsonElement("precipitation")]
+    public decimal? Precipitation { get; set; }
+
+    [BsonElement("uvi")]
+    public int? UVI { get; set; }
+
+    [BsonElement("light")]
+    public decimal? Light { get; set; }
+
+    [BsonElement("part03")]
+    public decimal? Part03 { get; set; }
+
+    [BsonElement("part05")]
+    public decimal? Part05 { get; set; }
+
+    [BsonElement("part10")]
+    public decimal? Part10 { get; set; }
+
+    [BsonElement("part25")]
+    public decimal? Part25 { get; set; }
+
+    [BsonElement("part50")]
+    public decimal? Part50 { get; set; }
+
+    [BsonElement("part100")]
+    public decimal? Part100 { get; set; }
+
+    [BsonElement("pm10")]
+    public decimal? PM10 { get; set; }
+
+    [BsonElement("pm25")]
+    public decimal? PM25 { get; set; }
+
+    [BsonElement("pm100")]
+    public decimal? PM100 { get; set; }
+
+    [BsonElement("co2")]
+    public decimal? CO2 { get; set; }
+
+    [BsonElement("lat")]
+    public string? lat { get; set; }
+
+    [BsonElement("lon")]
+    public string? lon { get; set; }
+
+    [BsonElement("alt")]
+    public string? alt { get; set; }
 }
 
