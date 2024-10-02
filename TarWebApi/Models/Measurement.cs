@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 namespace TarWebApi.Models;
@@ -11,11 +11,9 @@ public class Measurement
     public string Id { get; private set; } = string.Empty;
 
     [BsonElement("stationId")]
-    [JsonPropertyName("stationId")]
     public string? StationId { get; set; }
 
     [BsonElement("date")]
-    [JsonPropertyName("date")]
     public DateTime? Date { get; set; }
 
     [BsonElement("timestamp")]
