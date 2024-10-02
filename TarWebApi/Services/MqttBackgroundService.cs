@@ -94,6 +94,7 @@ public class MqttBackgroundService : BackgroundService
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            _logger.LogInformation($"Error saving to db: {ex.Message}");
         }
     }
 }
