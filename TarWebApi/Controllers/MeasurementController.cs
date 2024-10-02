@@ -22,6 +22,14 @@ public class MeasurementController : ControllerBase
     }
 
     [HttpPost]
+    [Route("GetLastMeasurementById")]
+    public async Task<ActionResult<GetLastMeasurementByIdResponse>> GetLastMeasurementById(GetLastMeasurementByIdRequest request)
+    {
+        var response = await _measurementService.GetLastMeasurementByIdAsync(request);
+        return Ok(response);
+    }
+
+    [HttpPost]
     [Route("GetMeasurementsByPeriod")]
     public async Task<ActionResult<GetMeasurementsByPeriodResponse>> GetMeasurementsByPeriod(GetMeasurementsByPeriodRequest request)
     {

@@ -1,6 +1,6 @@
 ﻿namespace TarWebApi.Models.Contracts
 {
-    public class GetMeasurementsByIdRequest
+    public class GetLastMeasurementByIdRequest
     {
         public required string StationId { get; set; }
     }

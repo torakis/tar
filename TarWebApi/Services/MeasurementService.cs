@@ -22,14 +22,39 @@ public class MeasurementService : IMeasurementService
         var resp = new GetMeasurementsByIdResponse() { IsSuccessful = true, ErrorText = "" };
         try
         {
-            var measurements = await _measurementsCollection.Find(s => s.StationId == request.Id).ToListAsync();
+            var measurements = await _measurementsCollection.Find(s => s.StationId == request.StationId).ToListAsync();
             if (measurements is null)
             {
                 resp.IsSuccessful = false;
-                resp.ErrorText = $"Measurements for station with Id = {request.Id} not found";
+                resp.ErrorText = $"Measurements for station with Id = {request.StationId} not found";
             }
             else
                 resp.Measurements = measurements;
+        }
+        catch (Exception ex)
+        {
+            resp.IsSuccessful = false;
+            resp.ErrorText = ex.ToString();
+        }
+        return resp;
+    }
+
+    public async Task<GetLastMeasurementByIdResponse> GetLastMeasurementByIdAsync(GetLastMeasurementByIdRequest request)
+    {
+        var resp = new GetLastMeasurementByIdResponse() { IsSuccessful = true, ErrorText = "" };
+        try
+        {
+            var lastMeasurement = await _measurementsCollection
+                .Find(s => s.StationId == request.StationId)
+                .SortByDescending(s => s.Date)
+                .FirstOrDefaultAsync();
+            if (lastMeasurement is null)
+            {
+                resp.IsSuccessful = false;
+                resp.ErrorText = $"Measurements for station with Id = {request.StationId} not found";
+            }
+            else
+                resp.Measurement = lastMeasurement;
         }
         catch (Exception ex)
         {
