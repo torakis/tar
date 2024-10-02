@@ -14,14 +14,6 @@ public class MeasurementController : ControllerBase
         _measurementService = measurementService;
 
     [HttpPost]
-    [Route("CreateMeasurement")]
-    public async Task<ActionResult<CreateMeasurementResponse>> CreateMeasurement(CreateMeasurementRequest request)
-    {
-        var response = await _measurementService.CreateMeasurementAsync(request);
-        return Ok(response);
-    }
-
-    [HttpPost]
     [Route("GetMeasurementsById")]
     public async Task<ActionResult<GetMeasurementsByIdResponse>> GetMeasurementsById(GetMeasurementsByIdRequest request)
     {

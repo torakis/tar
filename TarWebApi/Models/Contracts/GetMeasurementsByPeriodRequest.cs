@@ -4,7 +4,7 @@ namespace TarWebApi.Models.Contracts
 {
     public class GetMeasurementsByPeriodRequest
     {
-        public string Id { get; set; }
-        public Period Period { get; set; }
+        public required string StationId { get; set; }
+        public Period Period { get; set; } = Period.Day;
     }
 }

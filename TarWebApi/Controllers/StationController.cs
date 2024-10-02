@@ -29,36 +29,5 @@ public class StationController : ControllerBase
         var response = await _stationService.GetStationByIdAsync(request);        
         return Ok(response);
     }
-
-    [HttpPost]
-    [Route("CreateStation")]
-    public async Task<ActionResult<CreateStationResponse>> CreateStation(CreateStationRequest request)
-    {
-        var response = await _stationService.CreateStationAsync(request);
-        return Ok(response);
-    }
-
-    [HttpPost]
-    [Route("UpdateStation")]
-    public async Task<ActionResult<UpdateStationResponse>> UpdateStation(UpdateStationRequest request)
-    {
-        var response = await _stationService.UpdateStationAsync(request);
-        return Ok(response);        
-    }
-
-    [HttpPost]
-    [Route("DeleteStation")]
-    public async Task<ActionResult<DeleteStationResponse>> DeleteStation(DeleteStationRequest request)
-    {
-        var response = await _stationService.DeleteStationAsync(request);
-        return Ok(response);
-    }
-
-    [HttpPost]
-    [Route("Test")]
-    public ActionResult<string> Test()
-    {
-        return Ok("Ok from Test");
-    }
 }
 

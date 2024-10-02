@@ -17,22 +17,6 @@ public class MeasurementService : IMeasurementService
         _measurementsCollection = db.GetCollection<Measurement>(settings.MeasurementsCollectionName);
     }
 
-    public async Task<CreateMeasurementResponse> CreateMeasurementAsync(CreateMeasurementRequest request)
-    {
-        var resp = new CreateMeasurementResponse() { IsSuccessful = true, ErrorText = "" };
-        try
-        {
-            await _measurementsCollection.InsertOneAsync(request.Measurement);
-            resp.Measurement = request.Measurement;
-        }
-        catch (Exception ex)
-        {
-            resp.IsSuccessful = false;
-            resp.ErrorText = ex.ToString();
-        }
-        return resp;
-    }
-
     public async Task<GetMeasurementsByIdResponse> GetMeasurementsByIdAsync(GetMeasurementsByIdRequest request)
     {
         var resp = new GetMeasurementsByIdResponse() { IsSuccessful = true, ErrorText = "" };
@@ -63,11 +47,11 @@ public class MeasurementService : IMeasurementService
         try
         {
             var searchDate = CalculateSearchDateForPeriod(request.Period);
-            var measurements = await _measurementsCollection.Find(s => s.StationId == request.Id && s.Date >= searchDate).ToListAsync();
+            var measurements = await _measurementsCollection.Find(s => s.StationId == request.StationId && s.Date >= searchDate).ToListAsync();
             if (measurements is null)
             {
                 resp.IsSuccessful = false;
-                resp.ErrorText = $"Measurements for station with Id = {request.Id} not found for the requested period.";
+                resp.ErrorText = $"Measurements for station {request.StationId} not found for the requested period.";
             }
             else
                 resp.Measurements = measurements;
