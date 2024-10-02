@@ -89,6 +89,11 @@ public class MqttBackgroundService : BackgroundService
         {
             var request = new CreateMeasurementRequest() { Measurement = message };
             request.Measurement.StationId = topic;
+
+            message.Date = message.Timestamp != null?
+                DateTimeOffset.FromUnixTimeMilliseconds((long)message.Timestamp).UtcDateTime :
+                DateTime.Now;
+
             await _measurementsCollection.InsertOneAsync(request.Measurement);
         }
         catch (Exception ex)
