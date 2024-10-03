@@ -7,12 +7,12 @@ namespace TarWebApi.Services;
 public class SurveyService : ISurveyService
 {
     private readonly IMongoCollection<Survey> _surveysCollection;
-    private readonly IMongoCollection<Survey> _surveyAnswersCollection;
+    private readonly IMongoCollection<SurveyAnswer> _surveyAnswersCollection;
     public SurveyService(IStationStoreDatabaseSettings settings, IMongoClient mongoClient)
     {
         var db = mongoClient.GetDatabase(settings.DatabaseName);
         _surveysCollection = db.GetCollection<Survey>(settings.SurveysCollectionName);
-        _surveyAnswersCollection = db.GetCollection<Survey>(settings.SurveyAnswersCollectionName);
+        _surveyAnswersCollection = db.GetCollection<SurveyAnswer>(settings.SurveyAnswersCollectionName);
     }
 
     public async Task<GetAllSurveysResponse> GetAllSurveysAsync(GetAllSurveysRequest request)
@@ -49,7 +49,7 @@ public class SurveyService : ISurveyService
         var resp = new SubmitSurveyAnswerResponse() { IsSuccessful = true, ErrorText = "" };
         try
         {
-            await _surveyAnswersCollection.InsertOneAsync(request.Survey);
+            await _surveyAnswersCollection.InsertOneAsync(request.SurveyAnswer);
         }
         catch(Exception ex)
         {

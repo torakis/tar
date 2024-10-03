@@ -2,7 +2,6 @@
 {
     public class SubmitSurveyAnswerRequest
     {
-        public Survey Survey { get; set; }
-        public string DeviceId { get; set; }
+        public SurveyAnswer SurveyAnswer { get; set; }
     }
 }

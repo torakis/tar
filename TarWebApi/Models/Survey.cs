@@ -46,13 +46,13 @@ public class SurveyQuestion
     public int Type { get; set; }
 
     [BsonElement("answers")]
-    public List<SurveyAnswer> Answers { get; set; }
+    public List<SurveyQuestionAnswer> Answers { get; set; }
 
     [BsonElement("comment")]
     public string? Comment { get; set; }
 }
 
-public class SurveyAnswer
+public class SurveyQuestionAnswer
 {
     [BsonElement("id")]
     [BsonRepresentation(BsonType.String)]
