@@ -23,6 +23,14 @@ public class SurveyController : ControllerBase
     }
 
     [HttpPost]
+    [Route("CreateSurvey")]
+    public async Task<ActionResult<CreateSurveyResponse>> CreateSurvey(CreateSurveyRequest request)
+    {
+        var response = await _surveyService.CreateSurveyAsync(request);
+        return Ok(response);
+    }
+
+    [HttpPost]
     [Route("SubmitSurveyAnswer")]
     public async Task<ActionResult<SubmitSurveyAnswerResponse>> SubmitSurveyAnswer(SubmitSurveyAnswerRequest request)
     {

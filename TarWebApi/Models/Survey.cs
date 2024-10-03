@@ -32,8 +32,7 @@ public class Survey
 
 public class Question
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonElement("id")]
     public string Id { get; set; }
 
     [BsonElement("question")]
@@ -51,8 +50,7 @@ public class Question
 
 public class Answer
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
+    [BsonElement("id")]
     public string Id { get; set; }
 
     [BsonElement("answer")]
@@ -61,3 +59,4 @@ public class Answer
     [BsonElement("selected")]
     public bool Selected { get; set; }
 }
+

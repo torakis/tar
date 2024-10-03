@@ -29,6 +29,21 @@ public class SurveyService : ISurveyService
         return resp;
     }
 
+    public async Task<CreateSurveyResponse> CreateSurveyAsync(CreateSurveyRequest request)
+    {
+        var resp = new CreateSurveyResponse() { IsSuccessful = true, ErrorText = "" };
+        try
+        {
+            await _surveysCollection.InsertOneAsync(request.Survey);
+        }
+        catch (Exception ex)
+        {
+            resp.IsSuccessful = false;
+            resp.ErrorText = ex.Message?.ToString();
+        }
+        return resp;
+    }
+
     public async Task<SubmitSurveyAnswerResponse> SubmitSurveyAnswerAsync(SubmitSurveyAnswerRequest request)
     {
         var resp = new SubmitSurveyAnswerResponse() { IsSuccessful = true, ErrorText = "" };
