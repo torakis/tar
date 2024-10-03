@@ -40,12 +40,15 @@ public class StationService : IStationService
         return resp;
     }
 
-    public async Task<CreateStationResponse> CreateStationAsync(CreateStationRequest request)
+    public async Task<CreateStationsResponse> CreateStationsAsync(CreateStationsRequest request)
     {
-        var resp = new CreateStationResponse() { IsSuccessful = true, ErrorText = "" };
+        var resp = new CreateStationsResponse() { IsSuccessful = true, ErrorText = "" };
         try
         {
-            await _stationsCollection.InsertOneAsync(request.Station);
+            foreach(var station in request.Stations)
+            {
+                await _stationsCollection.InsertOneAsync(station);
+            }            
         }
         catch (Exception ex)
         {

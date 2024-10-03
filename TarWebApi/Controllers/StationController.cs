@@ -31,10 +31,10 @@ public class StationController : ControllerBase
     }
 
     [HttpPost]
-    [Route("CreateStation")]
-    public async Task<ActionResult<CreateStationResponse>> CreateStation(CreateStationRequest request)
+    [Route("CreateStations")]
+    public async Task<ActionResult<CreateStationsResponse>> CreateStations(CreateStationsRequest request)
     {
-        var response = await _stationService.CreateStationAsync(request);
+        var response = await _stationService.CreateStationsAsync(request);
         return Ok(response);
     }
 }

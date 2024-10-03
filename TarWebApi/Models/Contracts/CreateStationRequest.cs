@@ -1,7 +1,7 @@
 ﻿namespace TarWebApi.Models.Contracts
 {
-    public class CreateStationRequest
+    public class CreateStationsRequest
     {
-        public Station Station { get; set; }
+        public List<Station> Stations { get; set; }
 	}
 }

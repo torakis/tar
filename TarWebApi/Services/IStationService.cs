@@ -8,6 +8,6 @@ public interface IStationService
 {
     Task<GetAllStationsResponse> GetAllStationsAsync(GetAllStationsRequest request);
     Task<GetStationByIdResponse> GetStationByIdAsync(GetStationByIdRequest request);
-    Task<CreateStationResponse> CreateStationAsync(CreateStationRequest request);
+    Task<CreateStationsResponse> CreateStationsAsync(CreateStationsRequest request);
 }
 
