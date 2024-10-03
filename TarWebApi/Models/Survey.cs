@@ -1,18 +1,21 @@
-﻿using System;
-using System.Text.Json.Serialization;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using TarWebApi.Models.Enum;
+
 namespace TarWebApi.Models;
 
 [BsonIgnoreExtraElements]
 public class Survey
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)] // Adjust to treat 'id' as a string
+    [BsonRepresentation(BsonType.String)]
     public string Id { get; set; } = string.Empty;
 
     [BsonElement("title")]
     public string Title { get; set; }
+
+    [BsonElement("language")]
+    public Language Language { get; set; }
 
     [BsonElement("date")]
     public DateTime Date { get; set; }
@@ -33,7 +36,7 @@ public class Survey
 public class SurveyQuestion
 {
     [BsonElement("id")]
-    [BsonRepresentation(BsonType.String)] // Ensure id is treated as a string
+    [BsonRepresentation(BsonType.String)]
     public string Id { get; set; }
 
     [BsonElement("question")]
@@ -52,7 +55,7 @@ public class SurveyQuestion
 public class SurveyAnswer
 {
     [BsonElement("id")]
-    [BsonRepresentation(BsonType.String)] // Ensure id is treated as a string
+    [BsonRepresentation(BsonType.String)]
     public string Id { get; set; }
 
     [BsonElement("answer")]
