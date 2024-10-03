@@ -8,7 +8,7 @@ namespace TarWebApi.Models;
 public class SurveyAnswer
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     [BsonElement("surveyid")]
