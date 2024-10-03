@@ -29,5 +29,13 @@ public class StationController : ControllerBase
         var response = await _stationService.GetStationByIdAsync(request);        
         return Ok(response);
     }
+
+    [HttpPost]
+    [Route("CreateStation")]
+    public async Task<ActionResult<CreateStationResponse>> CreateStation(CreateStationRequest request)
+    {
+        var response = await _stationService.CreateStationAsync(request);
+        return Ok(response);
+    }
 }
 

@@ -39,4 +39,19 @@ public class StationService : IStationService
         resp.Station = station;
         return resp;
     }
+
+    public async Task<CreateStationResponse> CreateStationAsync(CreateStationRequest request)
+    {
+        var resp = new CreateStationResponse() { IsSuccessful = true, ErrorText = "" };
+        try
+        {
+            await _stationsCollection.InsertOneAsync(request.Station);
+        }
+        catch (Exception ex)
+        {
+            resp.IsSuccessful = false;
+            resp.ErrorText = ex.Message?.ToString();
+        }
+        return resp;
+    }
 }
