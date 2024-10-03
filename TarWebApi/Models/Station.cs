@@ -8,11 +8,9 @@ namespace TarWebApi.Models;
 public class Station
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; private set; } = string.Empty;
-
+    [BsonRepresentation(BsonType.String)]
     [BsonElement("stationId")]
-    public string? StationId { get; set; }
+    public string StationId { get; set; } = string.Empty;
 
     [BsonElement("stationType")]
     public int? StationType { get; set; }
