@@ -27,34 +27,34 @@ public class Survey
     public string Category { get; set; }
 
     [BsonElement("questions")]
-    public List<Question> Questions { get; set; }
+    public List<SurveyQuestion> Questions { get; set; }
 }
 
-public class Question
+public class SurveyQuestion
 {
     [BsonElement("id")]
     public string Id { get; set; }
 
     [BsonElement("question")]
-    public string QuestionText { get; set; }
+    public string Question { get; set; }
 
     [BsonElement("type")]
     public int Type { get; set; }
 
     [BsonElement("answers")]
-    public List<Answer> Answers { get; set; }
+    public List<SurveyAnswer> Answers { get; set; }
 
     [BsonElement("comment")]
     public string? Comment { get; set; }
 }
 
-public class Answer
+public class SurveyAnswer
 {
     [BsonElement("id")]
     public string Id { get; set; }
 
     [BsonElement("answer")]
-    public string AnswerText { get; set; }
+    public string Answer { get; set; }
 
     [BsonElement("selected")]
     public bool Selected { get; set; }
