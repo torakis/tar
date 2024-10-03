@@ -8,8 +8,8 @@ namespace TarWebApi.Models;
 public class Survey
 {
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    [BsonRepresentation(BsonType.String)] // Adjust to treat 'id' as a string
+    public string Id { get; set; } = string.Empty;
 
     [BsonElement("title")]
     public string Title { get; set; }
@@ -33,6 +33,7 @@ public class Survey
 public class SurveyQuestion
 {
     [BsonElement("id")]
+    [BsonRepresentation(BsonType.String)] // Ensure id is treated as a string
     public string Id { get; set; }
 
     [BsonElement("question")]
@@ -51,6 +52,7 @@ public class SurveyQuestion
 public class SurveyAnswer
 {
     [BsonElement("id")]
+    [BsonRepresentation(BsonType.String)] // Ensure id is treated as a string
     public string Id { get; set; }
 
     [BsonElement("answer")]
@@ -59,4 +61,3 @@ public class SurveyAnswer
     [BsonElement("selected")]
     public bool Selected { get; set; }
 }
-
