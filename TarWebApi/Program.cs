@@ -32,6 +32,7 @@ builder.Services.AddSingleton<IStationStoreDatabaseSettings>(sp => sp.GetRequire
 builder.Services.AddSingleton<IMongoClient>(s => new MongoClient(builder.Configuration.GetValue<string>("StationStoreDatabaseSettings:ConnectionString")));
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<ISurveyService, SurveyService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
