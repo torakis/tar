@@ -36,7 +36,6 @@ public class Survey
 public class SurveyQuestion
 {
     [BsonElement("id")]
-    [BsonRepresentation(BsonType.String)]
     public string Id { get; set; }
 
     [BsonElement("question")]
@@ -55,7 +54,6 @@ public class SurveyQuestion
 public class SurveyQuestionAnswer
 {
     [BsonElement("id")]
-    [BsonRepresentation(BsonType.String)]
     public string Id { get; set; }
 
     [BsonElement("answer")]
