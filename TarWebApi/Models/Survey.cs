@@ -33,6 +33,7 @@ public class Survey
 public class Question
 {
     [BsonElement("id")]
+    [BsonRepresentation(BsonType.String)] // Ensures that MongoDB treats this as a string
     public string Id { get; set; }
 
     [BsonElement("question")]
@@ -51,6 +52,7 @@ public class Question
 public class Answer
 {
     [BsonElement("id")]
+    [BsonRepresentation(BsonType.String)] // Ensures that MongoDB treats this as a string
     public string Id { get; set; }
 
     [BsonElement("answer")]
@@ -59,4 +61,3 @@ public class Answer
     [BsonElement("selected")]
     public bool Selected { get; set; }
 }
-
