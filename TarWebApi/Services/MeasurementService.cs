@@ -66,6 +66,11 @@ public class MeasurementService : IMeasurementService
 
     //Gets the measurements for specific station for the requested period
     //A valid day is from 00:00 - 23:59
+    //calcuate the average depending on period
+    //for day --> group by 1 hour = 24 values
+    //for week --> group by 4 hours = 42 values
+    //for month --> group by 1 day = 30 values
+    //for custom dates --> if period < 7 days, group by 4 hours else group by 1 day
     public async Task<GetMeasurementsByPeriodResponse> GetMeasurementsByPeriodAsync(GetMeasurementsByPeriodRequest request)
     {
         var resp = new GetMeasurementsByPeriodResponse() { IsSuccessful = true, ErrorText = "" };
