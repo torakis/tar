@@ -35,7 +35,7 @@ public class Measurement
 
     [BsonElement("windDirection")]
     [JsonPropertyName("Wind_direction")]
-    public int? WindDirection { get; set; }
+    public decimal? WindDirection { get; set; }
 
     [BsonElement("gust")]
     public decimal? Gust { get; set; }
@@ -44,7 +44,7 @@ public class Measurement
     public decimal? Precipitation { get; set; }
 
     [BsonElement("uvi")]
-    public int? UVI { get; set; }
+    public decimal? UVI { get; set; }
 
     [BsonElement("light")]
     public decimal? Light { get; set; }

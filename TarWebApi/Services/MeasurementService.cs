@@ -60,22 +60,14 @@ public class MeasurementService : IMeasurementService
                 .Project(projection)
                 .ToListAsync();
 
-            // Convert int? fields to decimal? in C# (for example, for WindDirection)
-            var projectedMeasurements = measurements
-                .Select(m => new MeasurementProjection
-                {
-                    Date = m.Date,
-                    Value = m.Value.HasValue ? (decimal?)m.Value.Value : null
-                }).ToList();
-
-            if (projectedMeasurements == null || !projectedMeasurements.Any())
+            if (measurements == null || !measurements.Any())
             {
                 resp.IsSuccessful = false;
                 resp.ErrorText = $"Measurements for station {request.StationId} not found for the requested period.";
             }
             else
             {
-                resp.Measurements = projectedMeasurements;
+                resp.Measurements = measurements;
             }
         }
         catch (Exception ex)
@@ -147,6 +139,5 @@ public class MeasurementService : IMeasurementService
 
         throw argumentOutOfRangeException;
     }
-
 
 }
