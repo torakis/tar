@@ -90,14 +90,23 @@ public class MeasurementService : IMeasurementService
         var resp = new GetMeasurementsByPeriodResponse() { IsSuccessful = true, ErrorText = "" };
         try
         {
-            var measurements = await _measurementsCollection.Find(s => s.StationId == request.StationId && s.Date >= request.DateFrom).ToListAsync();
-            if (measurements is null)
+            var filter = Builders<Measurement>.Filter.Where(s => s.StationId == request.StationId
+                && s.Date >= request.DateFrom
+                && s.Date <= request.DateTo);
+
+            var measurements = await _measurementsCollection
+                .Find(filter)
+                .ToListAsync();
+
+            if (measurements == null || !measurements.Any())
             {
                 resp.IsSuccessful = false;
                 resp.ErrorText = $"Measurements for station {request.StationId} not found for the requested period.";
             }
             else
+            {
                 resp.Measurements = measurements;
+            }
         }
         catch (Exception ex)
         {
