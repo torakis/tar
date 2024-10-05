@@ -89,3 +89,8 @@ public class Measurement
     public string? alt { get; set; }
 }
 
+public class MeasurementProjection
+{
+    public DateTime? Date { get; set; }
+    public decimal? Value { get; set; }
+}

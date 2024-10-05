@@ -14,14 +14,6 @@ public class MeasurementController : ControllerBase
         _measurementService = measurementService;
 
     [HttpPost]
-    [Route("GetMeasurementsById")]
-    public async Task<ActionResult<GetMeasurementsByIdResponse>> GetMeasurementsById(GetMeasurementsByIdRequest request)
-    {
-        var response = await _measurementService.GetMeasurementsByIdAsync(request);
-        return Ok(response);
-    }
-
-    [HttpPost]
     [Route("GetLastMeasurementById")]
     public async Task<ActionResult<GetLastMeasurementByIdResponse>> GetLastMeasurementById(GetLastMeasurementByIdRequest request)
     {
@@ -30,18 +22,18 @@ public class MeasurementController : ControllerBase
     }
 
     [HttpPost]
-    [Route("GetMeasurementsByPeriod")]
-    public async Task<ActionResult<GetMeasurementsByPeriodResponse>> GetMeasurementsByPeriod(GetMeasurementsByPeriodRequest request)
+    [Route("GetMeasurementByPeriod")]
+    public async Task<ActionResult<GetMeasurementByPeriodResponse>> GetMeasurementByPeriod(GetMeasurementByPeriodRequest request)
     {
-        var response = await _measurementService.GetMeasurementsByPeriodAsync(request);
+        var response = await _measurementService.GetMeasurementByPeriodAsync(request);
         return Ok(response);
     }
 
     [HttpPost]
-    [Route("GetPeriodStatistics")]
-    public async Task<ActionResult<GetPeriodStatisticsResponse>> GetPeriodStatistics(GetPeriodStatisticsRequest request)
+    [Route("GetMeasurementsByPeriod")]
+    public async Task<ActionResult<GetMeasurementsByPeriodResponse>> GetMeasurementsByPeriod(GetMeasurementsByPeriodRequest request)
     {
-        var response = await _measurementService.GetPeriodStatisticsAsync(request);
+        var response = await _measurementService.GetMeasurementsByPeriodAsync(request);
         return Ok(response);
     }
 }
