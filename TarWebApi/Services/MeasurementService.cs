@@ -60,14 +60,22 @@ public class MeasurementService : IMeasurementService
                 .Project(projection)
                 .ToListAsync();
 
-            if (measurements == null || !measurements.Any())
+            // Convert int? fields to decimal? in C# (for example, for WindDirection)
+            var projectedMeasurements = measurements
+                .Select(m => new MeasurementProjection
+                {
+                    Date = m.Date,
+                    Value = m.Value.HasValue ? (decimal?)m.Value.Value : null
+                }).ToList();
+
+            if (projectedMeasurements == null || !projectedMeasurements.Any())
             {
                 resp.IsSuccessful = false;
                 resp.ErrorText = $"Measurements for station {request.StationId} not found for the requested period.";
             }
             else
             {
-                resp.Measurements = measurements;
+                resp.Measurements = projectedMeasurements;
             }
         }
         catch (Exception ex)
@@ -110,27 +118,27 @@ public class MeasurementService : IMeasurementService
     private static ProjectionDefinition<Measurement, MeasurementProjection> GetMeasurementProjection(MeasurementType type, Exception argumentOutOfRangeException)
     {
         var projectionMap = new Dictionary<MeasurementType, Expression<Func<Measurement, MeasurementProjection>>>
-    {
-        { MeasurementType.Temperature, m => new MeasurementProjection { Date = m.Date, Value = m.Temperature } },
-        { MeasurementType.Humidity, m => new MeasurementProjection { Date = m.Date, Value = m.Humidity } },
-        { MeasurementType.Pressure, m => new MeasurementProjection { Date = m.Date, Value = m.Pressure } },
-        { MeasurementType.WindSpeed, m => new MeasurementProjection { Date = m.Date, Value = m.WindSpeed } },
-        { MeasurementType.WindDirection, m => new MeasurementProjection { Date = m.Date, Value = (decimal?)m.WindDirection } },
-        { MeasurementType.Gust, m => new MeasurementProjection { Date = m.Date, Value = m.Gust } },
-        { MeasurementType.Precipitation, m => new MeasurementProjection { Date = m.Date, Value = m.Precipitation } },
-        { MeasurementType.UVI, m => new MeasurementProjection { Date = m.Date, Value = m.UVI } },
-        { MeasurementType.Light, m => new MeasurementProjection { Date = m.Date, Value = m.Light } },
-        { MeasurementType.Part03, m => new MeasurementProjection { Date = m.Date, Value = m.Part03 } },
-        { MeasurementType.Part05, m => new MeasurementProjection { Date = m.Date, Value = m.Part05 } },
-        { MeasurementType.Part10, m => new MeasurementProjection { Date = m.Date, Value = m.Part10 } },
-        { MeasurementType.Part25, m => new MeasurementProjection { Date = m.Date, Value = m.Part25 } },
-        { MeasurementType.Part50, m => new MeasurementProjection { Date = m.Date, Value = m.Part50 } },
-        { MeasurementType.Part100, m => new MeasurementProjection { Date = m.Date, Value = m.Part100 } },
-        { MeasurementType.PM10, m => new MeasurementProjection { Date = m.Date, Value = m.PM10 } },
-        { MeasurementType.PM25, m => new MeasurementProjection { Date = m.Date, Value = m.PM25 } },
-        { MeasurementType.PM100, m => new MeasurementProjection { Date = m.Date, Value = m.PM100 } },
-        { MeasurementType.CO2, m => new MeasurementProjection { Date = m.Date, Value = m.CO2 } }
-    };
+        {
+            { MeasurementType.Temperature, m => new MeasurementProjection { Date = m.Date, Value = m.Temperature } },
+            { MeasurementType.Humidity, m => new MeasurementProjection { Date = m.Date, Value = m.Humidity } },
+            { MeasurementType.Pressure, m => new MeasurementProjection { Date = m.Date, Value = m.Pressure } },
+            { MeasurementType.WindSpeed, m => new MeasurementProjection { Date = m.Date, Value = m.WindSpeed } },
+            { MeasurementType.WindDirection, m => new MeasurementProjection { Date = m.Date, Value = m.WindDirection } },
+            { MeasurementType.Gust, m => new MeasurementProjection { Date = m.Date, Value = m.Gust } },
+            { MeasurementType.Precipitation, m => new MeasurementProjection { Date = m.Date, Value = m.Precipitation } },
+            { MeasurementType.UVI, m => new MeasurementProjection { Date = m.Date, Value = m.UVI } },
+            { MeasurementType.Light, m => new MeasurementProjection { Date = m.Date, Value = m.Light } },
+            { MeasurementType.Part03, m => new MeasurementProjection { Date = m.Date, Value = m.Part03 } },
+            { MeasurementType.Part05, m => new MeasurementProjection { Date = m.Date, Value = m.Part05 } },
+            { MeasurementType.Part10, m => new MeasurementProjection { Date = m.Date, Value = m.Part10 } },
+            { MeasurementType.Part25, m => new MeasurementProjection { Date = m.Date, Value = m.Part25 } },
+            { MeasurementType.Part50, m => new MeasurementProjection { Date = m.Date, Value = m.Part50 } },
+            { MeasurementType.Part100, m => new MeasurementProjection { Date = m.Date, Value = m.Part100 } },
+            { MeasurementType.PM10, m => new MeasurementProjection { Date = m.Date, Value = m.PM10 } },
+            { MeasurementType.PM25, m => new MeasurementProjection { Date = m.Date, Value = m.PM25 } },
+            { MeasurementType.PM100, m => new MeasurementProjection { Date = m.Date, Value = m.PM100 } },
+            { MeasurementType.CO2, m => new MeasurementProjection { Date = m.Date, Value = m.CO2 } }
+        };
 
         if (projectionMap.TryGetValue(type, out var projection))
         {
@@ -139,5 +147,6 @@ public class MeasurementService : IMeasurementService
 
         throw argumentOutOfRangeException;
     }
+
 
 }
