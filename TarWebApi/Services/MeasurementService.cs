@@ -43,7 +43,8 @@ public class MeasurementService : IMeasurementService
         return resp;
     }
 
-    //for one measurement type
+    //Gets the measurements for specific station for the requested period, for one measurement type
+    //A valid day is from 00:00 - 23:59
     public async Task<GetMeasurementByPeriodResponse> GetMeasurementByPeriodAsync(GetMeasurementByPeriodRequest request)
     {
         var resp = new GetMeasurementByPeriodResponse() { IsSuccessful = true, ErrorText = "" };
@@ -80,11 +81,6 @@ public class MeasurementService : IMeasurementService
 
     //Gets the measurements for specific station for the requested period
     //A valid day is from 00:00 - 23:59
-    //calculate the average depending on period
-    //for day --> group by 1 hour = 24 values
-    //for week --> group by 4 hours = 42 values
-    //for month --> group by 1 day = 30 values
-
     public async Task<GetMeasurementsByPeriodResponse> GetMeasurementsByPeriodAsync(GetMeasurementsByPeriodRequest request)
     {
         var resp = new GetMeasurementsByPeriodResponse() { IsSuccessful = true, ErrorText = "" };
@@ -105,7 +101,7 @@ public class MeasurementService : IMeasurementService
             }
             else
             {
-                resp.Measurements = measurements;
+                resp.Measurements = CalculateAverageForMeasurements(measurements, request.DateFrom, request.DateTo);
             }
         }
         catch (Exception ex)
@@ -206,6 +202,96 @@ public class MeasurementService : IMeasurementService
                     Date = groupDate,  // Use the grouped date
                     Value = averageValue  // Set the average value for the group
                 });
+            }
+        }
+        catch (Exception ex)
+        {
+            // Optionally handle the exception (for logging or debugging)
+            Console.WriteLine(ex.Message);
+        }
+
+        return resp;
+    }
+
+    private static List<Measurement> CalculateAverageForMeasurements(List<Measurement> measurements, DateTime? dateFrom, DateTime? dateTo)
+    {
+        var resp = new List<Measurement>();
+
+        try
+        {
+            var dateDiff = (dateTo - dateFrom)?.TotalDays ?? 0;
+
+            // Determine the grouping interval based on the date difference
+            TimeSpan interval;
+            if (dateDiff < 1)
+            {
+                interval = TimeSpan.FromHours(1);  // Group by hour if the date range is less than 1 day
+            }
+            else if (dateDiff >= 1 && dateDiff <= 7)
+            {
+                interval = TimeSpan.FromHours(4);  // Group by 4 hours if the date range is between 1 and 7 days
+            }
+            else
+            {
+                interval = TimeSpan.FromDays(1);  // Group by day if the date range is greater than 7 days
+            }
+
+            // Group measurements based on the interval
+            var groupedMeasurements = measurements
+                .GroupBy(m =>
+                {
+                    if (interval == TimeSpan.FromDays(1))
+                    {
+                        // If grouping by day, return only the year, month, and day (ignore the time part)
+                        return new DateTime(m.Date.Year, m.Date.Month, m.Date.Day);
+                    }
+                    else if (interval == TimeSpan.FromHours(4))
+                    {
+                        // Adjust for 4-hour grouping
+                        return new DateTime(m.Date.Year, m.Date.Month, m.Date.Day, (m.Date.Hour / 4) * 4, 0, 0);
+                    }
+                    else
+                    {
+                        // Group by hour
+                        return new DateTime(m.Date.Year, m.Date.Month, m.Date.Day, m.Date.Hour, 0, 0);
+                    }
+                })
+                .ToList();
+
+            // Calculate the average for each group
+            foreach (var group in groupedMeasurements)
+            {
+                var groupDate = group.Key;  // The key is the date of the group (with or without time)
+
+                // Create a new Measurement for the averaged data
+                var averagedMeasurement = new Measurement
+                {
+                    Date = groupDate,  // Use the grouped date
+
+                    // Calculate average for all the fields
+                    Temperature = group.Average(m => m.Temperature),
+                    Humidity = group.Average(m => m.Humidity),
+                    Pressure = group.Average(m => m.Pressure),
+                    WindSpeed = group.Average(m => m.WindSpeed),
+                    WindDirection = (int?)group.Average(m => m.WindDirection),
+                    Gust = group.Average(m => m.Gust),
+                    Precipitation = group.Average(m => m.Precipitation),
+                    UVI = (int?)group.Average(m => m.UVI),
+                    Light = group.Average(m => m.Light),
+                    Part03 = group.Average(m => m.Part03),
+                    Part05 = group.Average(m => m.Part05),
+                    Part10 = group.Average(m => m.Part10),
+                    Part25 = group.Average(m => m.Part25),
+                    Part50 = group.Average(m => m.Part50),
+                    Part100 = group.Average(m => m.Part100),
+                    PM10 = group.Average(m => m.PM10),
+                    PM25 = group.Average(m => m.PM25),
+                    PM100 = group.Average(m => m.PM100),
+                    CO2 = group.Average(m => m.CO2)
+                };
+
+                // Add the averaged measurement to the response list
+                resp.Add(averagedMeasurement);
             }
         }
         catch (Exception ex)
