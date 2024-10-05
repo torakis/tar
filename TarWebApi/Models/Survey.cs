@@ -11,9 +11,6 @@ public class Survey
     [BsonRepresentation(BsonType.String)]
     public string Id { get; set; } = string.Empty;
 
-    [BsonElement("title")]
-    public string Title { get; set; } = string.Empty;
-
     [BsonElement("surveyLanguage")]
     public SurveyLanguage? SurveyLanguage { get; set; }
 
@@ -26,6 +23,9 @@ public class SurveyLanguage
 {
     [BsonElement("language")]
     public string Language { get; set; } = string.Empty;
+
+    [BsonElement("title")]
+    public string Title { get; set; } = string.Empty;
 
     [BsonElement("description")]
     public string Description { get; set; } = string.Empty;
