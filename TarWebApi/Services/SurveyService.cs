@@ -29,6 +29,20 @@ public class SurveyService : ISurveyService
         return resp;
     }
 
+    public async Task<GetAllSurveyAnswersResponse> GetAllSurveyAnswersAsync(GetAllSurveyAnswersRequest request)
+    {
+        var resp = new GetAllSurveyAnswersResponse() { IsSuccessful = true, ErrorText = "" };
+        var surveys = await _surveyAnswersCollection.Find(s => s.SurveyId == request.SurveyId).ToListAsync();
+        if (surveys is null)
+        {
+            resp.IsSuccessful = false;
+            resp.ErrorText = $"No surveys found";
+        }
+        else
+            resp.SurveyAnswers = surveys;
+        return resp;
+    }
+
     public async Task<CreateSurveyResponse> CreateSurveyAsync(CreateSurveyRequest request)
     {
         var resp = new CreateSurveyResponse() { IsSuccessful = true, ErrorText = "" };
