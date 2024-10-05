@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using Amazon.Runtime.Internal;
 using Microsoft.VisualBasic;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using TarWebApi.Models;
 using TarWebApi.Models.Contracts;
@@ -53,12 +54,50 @@ public class MeasurementService : IMeasurementService
                 && s.Date >= request.DateFrom
                 && s.Date <= request.DateTo);
 
-            var projection = GetMeasurementProjection(request.MeasurementType, new ArgumentOutOfRangeException());
+            var dateDiff = (request.DateTo - request.DateFrom)?.TotalDays ?? 0;
 
-            var measurements = await _measurementsCollection
-                .Find(filter)
-                .Project(projection)
-                .ToListAsync();
+            // Determine the grouping interval based on the date difference
+            string interval;
+            if (dateDiff < 1)
+            {
+                interval = "hour";
+            }
+            else if (dateDiff >= 1 && dateDiff <= 7)
+            {
+                interval = "4hours";
+            }
+            else
+            {
+                interval = "day";
+            }
+
+            // Build the aggregation pipeline
+            var pipeline = new List<BsonDocument>
+        {
+            // Match the documents that meet the filter criteria
+            new BsonDocument("$match", filter.ToBsonDocument()),
+
+            // Group based on the interval (hour, 4 hours, or day)
+            new BsonDocument("$group", new BsonDocument
+            {
+                { "_id", new BsonDocument
+                    {
+                        { "$dateTrunc", new BsonDocument
+                            {
+                                { "date", "$date" },
+                                { "unit", interval == "4hours" ? "hour" : interval }, // For 4-hour grouping, we'll handle it separately
+                                { "binSize", interval == "4hours" ? 4 : 1 } // Grouping by 4 hours if needed
+                            }
+                        }
+                    }
+                },
+                { "averageMeasurement", new BsonDocument { { "$avg", $"$${request.MeasurementType}" } } }, // Average value for the measurement type
+                { "measurements", new BsonDocument { { "$push", "$$ROOT" } } } // Optionally push the measurements into an array
+            })
+        };
+
+            // Execute the aggregation query
+            var measurements = await _measurementsCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
 
             if (measurements == null || !measurements.Any())
             {
@@ -67,7 +106,13 @@ public class MeasurementService : IMeasurementService
             }
             else
             {
-                resp.Measurements = measurements;
+                // Convert the BsonDocuments to the desired response format
+                // Here you need to map or transform the results to your response model
+                resp.Measurements = measurements.Select(m => new MeasurementProjection
+                {
+                    Date = m["_id"].ToUniversalTime(), // Use the group key (date) as the measurement date
+                    Value = m["averageMeasurement"].AsDecimal // This is the average measurement value
+                }).ToList();
             }
         }
         catch (Exception ex)
@@ -78,8 +123,10 @@ public class MeasurementService : IMeasurementService
         return resp;
     }
 
+
     //Gets the measurements for specific station for the requested period
     //A valid day is from 00:00 - 23:59
+
     //calculate the average depending on period
     //for day --> group by 1 hour = 24 values
     //for week --> group by 4 hours = 42 values
