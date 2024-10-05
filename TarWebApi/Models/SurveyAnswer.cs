@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System.Text.Json.Serialization;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using TarWebApi.Models.Enum;
 
@@ -21,6 +22,7 @@ public class SurveyAnswer
     public DateTime Date { get; set; }
 
     [BsonElement("questions")]
+    [JsonPropertyName("questions")]
     public List<SurveyAnswerQuestion> SurveyAnswerQuestions { get; set; }
 }
 
