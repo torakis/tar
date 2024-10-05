@@ -269,25 +269,25 @@ public class MeasurementService : IMeasurementService
                     Date = groupDate,  // Use the grouped date
 
                     // Calculate average for all the fields
-                    Temperature = group.Average(m => m.Temperature),
-                    Humidity = group.Average(m => m.Humidity),
-                    Pressure = group.Average(m => m.Pressure),
-                    WindSpeed = group.Average(m => m.WindSpeed),
-                    WindDirection = (int?)group.Average(m => m.WindDirection),
-                    Gust = group.Average(m => m.Gust),
-                    Precipitation = group.Average(m => m.Precipitation),
-                    UVI = (int?)group.Average(m => m.UVI),
-                    Light = group.Average(m => m.Light),
-                    Part03 = group.Average(m => m.Part03),
-                    Part05 = group.Average(m => m.Part05),
-                    Part10 = group.Average(m => m.Part10),
-                    Part25 = group.Average(m => m.Part25),
-                    Part50 = group.Average(m => m.Part50),
-                    Part100 = group.Average(m => m.Part100),
-                    PM10 = group.Average(m => m.PM10),
-                    PM25 = group.Average(m => m.PM25),
-                    PM100 = group.Average(m => m.PM100),
-                    CO2 = group.Average(m => m.CO2)
+                    Temperature = group.Average(m => m.Temperature) != null ? Math.Round(group.Average(m => m.Temperature).Value, 2) : null,
+                    Humidity = group.Average(m => m.Humidity) != null ? Math.Round(group.Average(m => m.Humidity).Value, 2) : null,
+                    Pressure = group.Average(m => m.Pressure) != null ? Math.Round(group.Average(m => m.Pressure).Value, 2) : null,
+                    WindSpeed = group.Average(m => m.WindSpeed) != null ? Math.Round(group.Average(m => m.WindSpeed).Value, 2) : null,
+                    WindDirection = group.Average(m => m.WindDirection) != null ? Math.Round(group.Average(m => m.WindDirection).Value, 2) : null,
+                    Gust = group.Average(m => m.Gust) != null ? Math.Round(group.Average(m => m.Gust).Value, 2) : null,
+                    Precipitation = group.Average(m => m.Precipitation) != null ? Math.Round(group.Average(m => m.Precipitation).Value, 2) : null,
+                    UVI = group.Average(m => m.UVI) != null ? Math.Round(group.Average(m => m.UVI).Value, 2) : null,
+                    Light = group.Average(m => m.Light) != null ? Math.Round(group.Average(m => m.Light).Value, 2) : null,
+                    Part03 = group.Average(m => m.Part03) != null ? Math.Round(group.Average(m => m.Part03).Value, 2) : null,
+                    Part05 = group.Average(m => m.Part05) != null ? Math.Round(group.Average(m => m.Part05).Value, 2) : null,
+                    Part10 = group.Average(m => m.Part10) != null ? Math.Round(group.Average(m => m.Part10).Value, 2) : null,
+                    Part25 = group.Average(m => m.Part25) != null ? Math.Round(group.Average(m => m.Part25).Value, 2) : null,
+                    Part50 = group.Average(m => m.Part50) != null ? Math.Round(group.Average(m => m.Part50).Value, 2) : null,
+                    Part100 = group.Average(m => m.Part100) != null ? Math.Round(group.Average(m => m.Part100).Value, 2) : null,
+                    PM10 = group.Average(m => m.PM10) != null ? Math.Round(group.Average(m => m.PM10).Value, 2) : null,
+                    PM25 = group.Average(m => m.PM25) != null ? Math.Round(group.Average(m => m.PM25).Value, 2) : null,
+                    PM100 = group.Average(m => m.PM100) != null ? Math.Round(group.Average(m => m.PM100).Value, 2) : null,
+                    CO2 = group.Average(m => m.CO2) != null ? Math.Round(group.Average(m => m.CO2).Value, 2) : null
                 };
 
                 // Add the averaged measurement to the response list
