@@ -11,15 +11,27 @@ public class SurveyAnswer
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
-    [BsonElement("surveyid")]
+    [BsonElement("surveyId")]
     public string SurveyId { get; set; }
 
-    [BsonElement("deviceid")]
+    [BsonElement("deviceId")]
     public string DeviceId { get; set; }
 
     [BsonElement("date")]
     public DateTime Date { get; set; }
 
     [BsonElement("questions")]
-    public List<SurveyQuestion> Questions { get; set; }
+    public List<SurveyAnswerQuestion> SurveyAnswerQuestions { get; set; }
+}
+
+public class SurveyAnswerQuestion
+{
+    [BsonElement("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [BsonElement("answers")]
+    public List<string> Answers { get; set; } = new List<string>();
+
+    [BsonElement("comment")]
+    public string? Comment { get; set; }
 }

@@ -70,14 +70,36 @@ public class MeasurementService : IMeasurementService
     //for day --> group by 1 hour = 24 values
     //for week --> group by 4 hours = 42 values
     //for month --> group by 1 day = 30 values
-    //for custom dates --> if period < 7 days, group by 4 hours else group by 1 day
+
     public async Task<GetMeasurementsByPeriodResponse> GetMeasurementsByPeriodAsync(GetMeasurementsByPeriodRequest request)
     {
         var resp = new GetMeasurementsByPeriodResponse() { IsSuccessful = true, ErrorText = "" };
         try
         {
-            var searchDate = CalculateSearchDateForPeriod(request.Period);
-            var measurements = await _measurementsCollection.Find(s => s.StationId == request.StationId && s.Date >= searchDate).ToListAsync();
+            var measurements = await _measurementsCollection.Find(s => s.StationId == request.StationId && s.Date >= request.DateFrom).ToListAsync();
+            if (measurements is null)
+            {
+                resp.IsSuccessful = false;
+                resp.ErrorText = $"Measurements for station {request.StationId} not found for the requested period.";
+            }
+            else
+                resp.Measurements = measurements;
+        }
+        catch (Exception ex)
+        {
+            resp.IsSuccessful = false;
+            resp.ErrorText = ex.ToString();
+        }
+        return resp;
+    }
+
+    //for one measurement type
+    public async Task<GetMeasurementsByPeriodResponse> GetMeasurementByPeriodAsync(GetMeasurementByPeriodRequest request)
+    {
+        var resp = new GetMeasurementsByPeriodResponse() { IsSuccessful = true, ErrorText = "" };
+        try
+        {
+            var measurements = await _measurementsCollection.Find(s => s.StationId == request.StationId && s.Date >= request.DateFrom).ToListAsync();
             if (measurements is null)
             {
                 resp.IsSuccessful = false;
@@ -99,7 +121,7 @@ public class MeasurementService : IMeasurementService
         var resp = new GetPeriodStatisticsResponse() { Statistics = new List<Statistics>(), IsSuccessful = true, ErrorText = "" };
         try
         {
-            var searchDate = CalculateSearchDateForPeriod(request.Period);
+            var searchDate = DateTime.Now;
             var measurements = await _measurementsCollection.Find(s => s.StationId == request.Id && s.Date >= searchDate).ToListAsync();
             if (measurements is null)
             {
@@ -126,24 +148,6 @@ public class MeasurementService : IMeasurementService
             resp.ErrorText = ex.ToString();
         }
         return resp;
-    }
-
-    private static DateTime CalculateSearchDateForPeriod(Period period)
-    {
-        var searchDate = DateTime.Now;
-        switch (period)
-        {
-            case Period.Day:
-                searchDate = searchDate.AddDays(-1);
-                break;
-            case Period.Week:
-                searchDate = searchDate.AddDays(-7);
-                break;
-            case Period.Month:
-                searchDate = searchDate.AddMonths(-1);
-                break;
-        }
-        return searchDate;
     }
 
     //ypologismos statistics

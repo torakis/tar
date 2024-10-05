@@ -1,9 +1,14 @@
-﻿namespace TarWebApi.Models.Enum
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TarWebApi.Models.Enum
 {
     public enum Language
-	{
-		English,
-		Greek
-	}
+    {
+        [Display(Name = "en")]
+        English,
+
+        [Display(Name = "el")]
+        Greek
+    }
 }
 
