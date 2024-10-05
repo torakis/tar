@@ -194,6 +194,7 @@ public class MeasurementService : IMeasurementService
             foreach (var group in groupedMeasurements)
             {
                 var averageValue = group.Average(m => m.Value);  // Calculate average of the "Value"
+                averageValue = averageValue != null ? Math.Round(averageValue.Value, 2) : null;
                 var groupDate = group.Key;  // The key is the date of the group (with or without time)
 
                 // Create a new MeasurementProjection for the averaged data
