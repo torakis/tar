@@ -67,7 +67,7 @@ public class MeasurementService : IMeasurementService
             }
             else
             {
-                resp.Measurements = measurements;
+                resp.Measurements = CalculateAverageForMeasurementProjection(measurements, request.DateFrom, request.DateTo);
             }
         }
         catch (Exception ex)
@@ -147,6 +147,63 @@ public class MeasurementService : IMeasurementService
         }
 
         throw argumentOutOfRangeException;
+    }
+
+    private static List<MeasurementProjection> CalculateAverageForMeasurementProjection(List<MeasurementProjection> measurements, DateTime? dateFrom, DateTime? dateTo)
+    {
+        var resp = new List<MeasurementProjection>();
+
+        try
+        {
+            var dateDiff = (dateTo - dateFrom)?.TotalDays ?? 0;
+
+            // Determine the grouping interval based on the date difference
+            TimeSpan interval;
+            if (dateDiff < 1)
+            {
+                interval = TimeSpan.FromHours(1);  // Group by hour if the date range is less than 1 day
+            }
+            else if (dateDiff >= 1 && dateDiff <= 7)
+            {
+                interval = TimeSpan.FromHours(4);  // Group by 4 hours if the date range is between 1 and 7 days
+            }
+            else
+            {
+                interval = TimeSpan.FromDays(1);  // Group by day if the date range is greater than 7 days
+            }
+
+            // Group measurements based on the interval
+            var groupedMeasurements = measurements
+                .GroupBy(m => new DateTime(
+                    m.Date.Year,
+                    m.Date.Month,
+                    m.Date.Day,
+                    (interval == TimeSpan.FromHours(4)) ? (m.Date.Hour / 4) * 4 : m.Date.Hour,  // Adjust for 4-hour grouping
+                    0,
+                    0))  // Groups by day and hour (or by 4-hour blocks)
+                .ToList();
+
+            // Calculate the average for each group
+            foreach (var group in groupedMeasurements)
+            {
+                var averageValue = group.Average(m => m.Value);  // Calculate average of the "Value"
+                var firstInGroup = group.First();  // Use the first measurement's date for the group
+
+                // Create a new MeasurementProjection for the averaged data
+                resp.Add(new MeasurementProjection
+                {
+                    Date = firstInGroup.Date,  // Use the date from the first element in the group
+                    Value = averageValue       // Set the average value for the group
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            // Optionally handle the exception (for logging or debugging)
+            Console.WriteLine(ex.Message);
+        }
+
+        return resp;
     }
 
 }

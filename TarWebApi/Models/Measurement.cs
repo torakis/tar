@@ -14,7 +14,7 @@ public class Measurement
     public string? StationId { get; set; }
 
     [BsonElement("date")]
-    public DateTime? Date { get; set; }
+    public DateTime Date { get; set; }
 
     [BsonElement("timestamp")]
     [JsonPropertyName("t")]
@@ -91,6 +91,6 @@ public class Measurement
 
 public class MeasurementProjection
 {
-    public DateTime? Date { get; set; }
+    public DateTime Date { get; set; }
     public decimal? Value { get; set; }
 }
