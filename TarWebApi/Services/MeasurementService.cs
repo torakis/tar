@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Metrics;
+using System.Linq.Expressions;
 using Amazon.Runtime.Internal;
 using Microsoft.VisualBasic;
 using MongoDB.Driver;
@@ -52,48 +53,7 @@ public class MeasurementService : IMeasurementService
                 && s.Date >= request.DateFrom
                 && s.Date <= request.DateTo);
 
-            // Define the projection based on the requested MeasurementType
-            ProjectionDefinition<Measurement, MeasurementProjection> projection;
-
-            switch (request.MeasurementType)
-            {
-                case MeasurementType.Temperature:
-                    projection = Builders<Measurement>.Projection.Expression(m => new MeasurementProjection
-                    {
-                        Date = m.Date,
-                        Value = m.Temperature
-                    });
-                    break;
-
-                case MeasurementType.Humidity:
-                    projection = Builders<Measurement>.Projection.Expression(m => new MeasurementProjection
-                    {
-                        Date = m.Date,
-                        Value = m.Humidity
-                    });
-                    break;
-
-                case MeasurementType.Pressure:
-                    projection = Builders<Measurement>.Projection.Expression(m => new MeasurementProjection
-                    {
-                        Date = m.Date,
-                        Value = m.Pressure
-                    });
-                    break;
-
-                case MeasurementType.WindSpeed:
-                    projection = Builders<Measurement>.Projection.Expression(m => new MeasurementProjection
-                    {
-                        Date = m.Date,
-                        Value = m.WindSpeed
-                    });
-                    break;
-
-                // Add cases for all other MeasurementType fields here
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            var projection = GetMeasurementProjection(request.MeasurementType, new ArgumentOutOfRangeException());
 
             var measurements = await _measurementsCollection
                 .Find(filter)
@@ -146,4 +106,38 @@ public class MeasurementService : IMeasurementService
         }
         return resp;
     }
+
+    private static ProjectionDefinition<Measurement, MeasurementProjection> GetMeasurementProjection(MeasurementType type, Exception argumentOutOfRangeException)
+    {
+        var projectionMap = new Dictionary<MeasurementType, Expression<Func<Measurement, MeasurementProjection>>>
+    {
+        { MeasurementType.Temperature, m => new MeasurementProjection { Date = m.Date, Value = m.Temperature } },
+        { MeasurementType.Humidity, m => new MeasurementProjection { Date = m.Date, Value = m.Humidity } },
+        { MeasurementType.Pressure, m => new MeasurementProjection { Date = m.Date, Value = m.Pressure } },
+        { MeasurementType.WindSpeed, m => new MeasurementProjection { Date = m.Date, Value = m.WindSpeed } },
+        { MeasurementType.WindDirection, m => new MeasurementProjection { Date = m.Date, Value = m.WindDirection } },
+        { MeasurementType.Gust, m => new MeasurementProjection { Date = m.Date, Value = m.Gust } },
+        { MeasurementType.Precipitation, m => new MeasurementProjection { Date = m.Date, Value = m.Precipitation } },
+        { MeasurementType.UVI, m => new MeasurementProjection { Date = m.Date, Value = m.UVI } },
+        { MeasurementType.Light, m => new MeasurementProjection { Date = m.Date, Value = m.Light } },
+        { MeasurementType.Part03, m => new MeasurementProjection { Date = m.Date, Value = m.Part03 } },
+        { MeasurementType.Part05, m => new MeasurementProjection { Date = m.Date, Value = m.Part05 } },
+        { MeasurementType.Part10, m => new MeasurementProjection { Date = m.Date, Value = m.Part10 } },
+        { MeasurementType.Part25, m => new MeasurementProjection { Date = m.Date, Value = m.Part25 } },
+        { MeasurementType.Part50, m => new MeasurementProjection { Date = m.Date, Value = m.Part50 } },
+        { MeasurementType.Part100, m => new MeasurementProjection { Date = m.Date, Value = m.Part100 } },
+        { MeasurementType.PM10, m => new MeasurementProjection { Date = m.Date, Value = m.PM10 } },
+        { MeasurementType.PM25, m => new MeasurementProjection { Date = m.Date, Value = m.PM25 } },
+        { MeasurementType.PM100, m => new MeasurementProjection { Date = m.Date, Value = m.PM100 } },
+        { MeasurementType.CO2, m => new MeasurementProjection { Date = m.Date, Value = m.CO2 } }
+    };
+
+        if (projectionMap.TryGetValue(type, out var projection))
+        {
+            return Builders<Measurement>.Projection.Expression(projection);
+        }
+
+        throw argumentOutOfRangeException;
+    }
+
 }
