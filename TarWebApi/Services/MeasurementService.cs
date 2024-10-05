@@ -115,7 +115,7 @@ public class MeasurementService : IMeasurementService
         { MeasurementType.Humidity, m => new MeasurementProjection { Date = m.Date, Value = m.Humidity } },
         { MeasurementType.Pressure, m => new MeasurementProjection { Date = m.Date, Value = m.Pressure } },
         { MeasurementType.WindSpeed, m => new MeasurementProjection { Date = m.Date, Value = m.WindSpeed } },
-        { MeasurementType.WindDirection, m => new MeasurementProjection { Date = m.Date, Value = m.WindDirection } },
+        { MeasurementType.WindDirection, m => new MeasurementProjection { Date = m.Date, Value = (decimal?)m.WindDirection } },
         { MeasurementType.Gust, m => new MeasurementProjection { Date = m.Date, Value = m.Gust } },
         { MeasurementType.Precipitation, m => new MeasurementProjection { Date = m.Date, Value = m.Precipitation } },
         { MeasurementType.UVI, m => new MeasurementProjection { Date = m.Date, Value = m.UVI } },
