@@ -174,26 +174,37 @@ public class MeasurementService : IMeasurementService
 
             // Group measurements based on the interval
             var groupedMeasurements = measurements
-                .GroupBy(m => new DateTime(
-                    m.Date.Year,
-                    m.Date.Month,
-                    m.Date.Day,
-                    (interval == TimeSpan.FromHours(4)) ? (m.Date.Hour / 4) * 4 : m.Date.Hour,  // Adjust for 4-hour grouping
-                    0,
-                    0))  // Groups by day and hour (or by 4-hour blocks)
+                .GroupBy(m =>
+                {
+                    if (interval == TimeSpan.FromDays(1))
+                    {
+                        // If grouping by day, return only the year, month, and day (ignore the time part)
+                        return new DateTime(m.Date.Year, m.Date.Month, m.Date.Day);
+                    }
+                    else if (interval == TimeSpan.FromHours(4))
+                    {
+                        // Adjust for 4-hour grouping
+                        return new DateTime(m.Date.Year, m.Date.Month, m.Date.Day, (m.Date.Hour / 4) * 4, 0, 0);
+                    }
+                    else
+                    {
+                        // Group by hour
+                        return new DateTime(m.Date.Year, m.Date.Month, m.Date.Day, m.Date.Hour, 0, 0);
+                    }
+                })
                 .ToList();
 
             // Calculate the average for each group
             foreach (var group in groupedMeasurements)
             {
                 var averageValue = group.Average(m => m.Value);  // Calculate average of the "Value"
-                var firstInGroup = group.First();  // Use the first measurement's date for the group
+                var groupDate = group.Key;  // The key is the date of the group (with or without time)
 
                 // Create a new MeasurementProjection for the averaged data
                 resp.Add(new MeasurementProjection
                 {
-                    Date = firstInGroup.Date,  // Use the date from the first element in the group
-                    Value = averageValue       // Set the average value for the group
+                    Date = groupDate,  // Use the grouped date
+                    Value = averageValue  // Set the average value for the group
                 });
             }
         }
@@ -205,5 +216,4 @@ public class MeasurementService : IMeasurementService
 
         return resp;
     }
-
 }
