@@ -14,8 +14,8 @@ public class Survey
     [BsonElement("date")]
     public DateTime Date { get; set; }
 
-    [BsonElement("surveyLanguage")]
-    public SurveyLanguage? SurveyLanguage { get; set; }
+    [BsonElement("surveyLanguages")]
+    public List<SurveyLanguage>? SurveyLanguages { get; set; }
 
 }
 
