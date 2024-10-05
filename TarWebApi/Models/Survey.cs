@@ -11,11 +11,11 @@ public class Survey
     [BsonRepresentation(BsonType.String)]
     public string Id { get; set; } = string.Empty;
 
-    [BsonElement("surveyLanguage")]
-    public SurveyLanguage? SurveyLanguage { get; set; }
-
     [BsonElement("date")]
     public DateTime Date { get; set; }
+
+    [BsonElement("surveyLanguage")]
+    public SurveyLanguage? SurveyLanguage { get; set; }
 
 }
 
