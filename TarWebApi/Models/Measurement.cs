@@ -26,8 +26,17 @@ public class Measurement
     [BsonElement("humidity")]
     public decimal? Humidity { get; set; }
 
+    [BsonElement("co2")]
+    public decimal? CO2 { get; set; }
+
+    [BsonElement("pm25")]
+    public decimal? PM25 { get; set; }
+
     [BsonElement("pressure")]
     public decimal? Pressure { get; set; }
+
+    [BsonElement("precipitation")]
+    public decimal? Precipitation { get; set; }
 
     [BsonElement("windSpeed")]
     [JsonPropertyName("Wind_speed")]
@@ -39,9 +48,6 @@ public class Measurement
 
     [BsonElement("gust")]
     public decimal? Gust { get; set; }
-
-    [BsonElement("precipitation")]
-    public decimal? Precipitation { get; set; }
 
     [BsonElement("uvi")]
     public decimal? UVI { get; set; }
@@ -70,14 +76,8 @@ public class Measurement
     [BsonElement("pm10")]
     public decimal? PM10 { get; set; }
 
-    [BsonElement("pm25")]
-    public decimal? PM25 { get; set; }
-
     [BsonElement("pm100")]
     public decimal? PM100 { get; set; }
-
-    [BsonElement("co2")]
-    public decimal? CO2 { get; set; }
 
     [BsonElement("lat")]
     public string? lat { get; set; }
