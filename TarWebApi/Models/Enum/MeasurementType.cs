@@ -4,11 +4,13 @@
     {
         Temperature,
         Humidity,
+        CO2,
+        PM25,
         Pressure,
+        Precipitation,
         WindSpeed,
         WindDirection,
         Gust,
-        Precipitation,
         UVI,
         Light,
         Part03,
@@ -18,9 +20,7 @@
         Part50,
         Part100,
         PM10,
-        PM25,
-        PM100,
-        CO2
+        PM100
     }
 }
 
