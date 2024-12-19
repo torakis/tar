@@ -13,8 +13,24 @@ public class Measurement
     [BsonElement("stationId")]
     public string? StationId { get; set; }
 
-    [BsonElement("date")]
+    // Timezone ID for UTC+2. Change as needed.
+    private const string TimeZoneId = "Central European Standard Time";
+
     public DateTime Date { get; set; }
+    
+    [BsonElement("date")]
+    public DateTime LocalDate
+    {
+        get
+        {
+            // Get the TimeZoneInfo for UTC+2
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
+            // Convert the UTC date to local time
+            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(Date, timeZoneInfo);
+            // Handle edge case: If before 2 AM, consider it part of the previous day
+            return localDateTime.Hour < 2 ? localDateTime.Date.AddDays(-1) : localDateTime.Date;
+        }
+    }
 
     [BsonElement("timestamp")]
     [JsonPropertyName("t")]
@@ -93,4 +109,27 @@ public class MeasurementProjection
 {
     public DateTime Date { get; set; }
     public decimal? Value { get; set; }
+    
+    // Timezone ID for UTC+2. Change as needed.
+    private static readonly string TimeZoneId = "Central European Standard Time";
+
+    public DateTime LocalDate
+    {
+        get
+        {
+            // Get the TimeZoneInfo for UTC+2
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
+
+            // Convert the UTC date to local time
+            var localDateTime = TimeZoneInfo.ConvertTimeFromUtc(Date, timeZoneInfo);
+
+            // Handle edge case: If before 2 AM, consider it part of the previous day
+            if (localDateTime.Hour < 2)
+            {
+                return localDateTime.Date.AddDays(-1);
+            }
+
+            return localDateTime.Date;
+        }
+    }
 }
